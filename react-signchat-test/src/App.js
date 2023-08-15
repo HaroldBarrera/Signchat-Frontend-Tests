@@ -8,7 +8,6 @@ function App() {
   const [inputValue, setInputValue] = useState("");
 
   const handleButtonClick = async (key) => {
-    //console.log("Hola");
     let letter = await key.target.alt;
     setInputValue(inputValue + letter);
     console.log(letter);
