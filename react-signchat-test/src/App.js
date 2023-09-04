@@ -7,11 +7,19 @@ function App() {
 
   const [inputValue, setInputValue] = useState("");
   const [inputImgValue, setInputImgValue] = useState([]);
+  const spaceView = "space_view.png";
 
   const handleButtonClick = async (key) => {
     let imageUrl = key.target.src;
     if(imageUrl != null){
-      setInputImgValue([...inputImgValue, imageUrl]);
+      if(key.target.alt === " "){
+        setInputImgValue((prevValue) => [...prevValue, " "]);
+      }else if(key.target.alt === "del"){
+        setInputImgValue((prevValue) => prevValue.slice(0, -1));
+      }else {
+        setInputImgValue([...inputImgValue, imageUrl]);
+        console.log(inputImgValue);
+      }
     }
   };
 
@@ -66,7 +74,7 @@ function App() {
       <h1>Prueba de Signchat Microservicio</h1>
       <ImageComponent />
       {inputImgValue.map((url, index) => (
-        <img key={index} src={url} alt={`Imagen ${index}`} />
+        <img key={index} src={url} alt={`http://localhost:8080/images/${spaceView}`} /> //TODO: Ver el caracter de space
       ))}
       <br />
       <button onClick={sendImagesToBackend}>Traducir imagenes</button>
