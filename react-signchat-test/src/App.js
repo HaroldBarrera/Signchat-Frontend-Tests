@@ -1,13 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import ImageComponent from './components/ImageComponent';
 import KeyboardComponent from './components/KeyboardComponent';
+import SockJsClient from 'react-stomp';
+
+//Websocket
+const SOCKET_URL = 'http://localhost:8080/ws-chat'; //Cambiar url dependiendo del backend
 
 function App() {
 
   const [inputValue, setInputValue] = useState("");
   const [inputImgValue, setInputImgValue] = useState([]);
-  const spaceView = "space_view.png";
+  const [message, setMessage] = useState('Your server message here');
+  //const spaceView = "space_view.png";
+
+  //Websocket
+  let onConnected = () => {
+    console.log('Connected!');
+  }
+
+  let onMessageReceived = (msg) => {
+    console.log(msg);
+    setMessage(msg.messageText);
+  }
+
+  let onDisconnected = () => {
+    console.log('Disconnected!');
+  }
 
   const handleButtonClick = async (key) => {
     let imageUrl = key.target.src;
@@ -72,14 +91,31 @@ function App() {
   return (
     <>
       <h1>Prueba de Signchat Microservicio</h1>
+
+      <SockJsClient 
+        url={SOCKET_URL}
+        topics={['/topic/message']}
+        onConnect={onConnected}
+        onDisconnect={onDisconnected}
+        onMessage={msg => onMessageReceived(msg)}
+        debug={true}
+      />
+      <div>{message}</div>
+
+      <br />
+      <br />
+
       <ImageComponent />
+
       {inputImgValue.map((url, index) => (
-        <img key={index} src={url} alt={`http://localhost:8080/images/${spaceView}`} /> //TODO: Ver el caracter de space
+        <img key={index} src={url} alt={` `} /> //TODO: Ver el caracter de space
       ))}
+
       <br />
       <button onClick={sendImagesToBackend}>Traducir imagenes</button>
       <button onClick={sendTextToBackend}>Traducir texto</button>
       <br />
+
       <input type='text' value={inputValue} onChange={(e) => {setInputValue(e.target.value)}}/>
       <KeyboardComponent handleKeyClick={handleButtonClick} />
     </>
