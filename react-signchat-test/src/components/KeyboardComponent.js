@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 const KeyboardComponent = ({ handleKeyClick }) => {
 
     const [keyboardHtml, setKeyboardHtml] = useState('');
+    const URL = process.env.REACT_APP_BACKEND_GURL;
 
     useEffect(() => {
-        fetch('http://localhost:8080/keyboard/react')
+        fetch(URL + 'keyboard/react')
             .then(response => {
                 if (response.ok) {
                     return response.text();
