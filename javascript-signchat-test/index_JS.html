@@ -27,11 +27,33 @@
         }
     </style>
 </head>
-<body>
-    <div class="Div-Chat">
+<body onload="cargarContenido()">
+    <div class="Div-Chat" id="chat-container">
         <!-- Contenedor de mensajes del chat -->
     </div>
     <!-- Campo de entrada para escribir mensajes -->
-    <input type="text" class="input-field" placeholder="Escribe tu mensaje aquí">
+    <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
+    <br>
+    <div class="input-field" id="keyboard-container">
+
+
+    <script>
+        function cargarContenido() {
+            // Realizar una solicitud HTTP GET a la URL deseada
+            fetch('http://localhost:8080/keyboard')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('keyboard-container').innerHTML = data;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        function LscKeyPressed(button) {
+            var dataKey = button.getAttribute('data-key');
+            var messageInput = document.getElementById('message-input');
+            
+            // Poner el valor de dataKey en el input-field
+            messageInput.value += dataKey;
+        }
+    </script>
 </body>
 </html>
