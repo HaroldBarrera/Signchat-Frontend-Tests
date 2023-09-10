@@ -28,12 +28,20 @@
     </style>
 </head>
 <body>
-    <div class="Div-Chat">
+    <div class="Div-Chat" id="chat-container">
         <!-- Contenedor de mensajes del chat -->
     </div>
     <!-- Campo de entrada para escribir mensajes -->
-    <input type="text" class="input-field" placeholder="Escribe tu mensaje aquí">
+    <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
     <br>
-   
+    <div class="input-field" id="keyboard-container">
+        <?php
+        // Obtener el contenido de "http://localhost:8080/keyboard" utilizando PHP
+        $contenido = file_get_contents('http://localhost:8080/keyboard');
+
+        // Imprimir el contenido dentro de la página
+        echo $contenido;
+        ?>
+    </div>
 </body>
 </html>
