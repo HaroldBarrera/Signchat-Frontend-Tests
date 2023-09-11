@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Chat JS</title>
     <style>
         /* Estilos CSS para el chat */
         /* Estilo básico del contenedor del chat */
@@ -16,7 +16,6 @@
             overflow-y: scroll; /* Agregamos una barra de desplazamiento vertical */
             max-height: 400px; /* Altura máxima del contenedor del chat */
         }
-
         /* Estilo del campo de entrada */
         .input-field {
             width: 100%;
@@ -25,6 +24,20 @@
             border-top: none; /* Quitamos el borde superior para que se integre con el contenedor de chat */
             border-radius: 0 0 5px 5px; /* Estilo de borde en la parte inferior */
         }
+        .contenedor {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+         /* Estilos para el botón */
+        .boton {
+            flex: 3; /* Ocupa el 30% del ancho disponible */
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body onload="cargarContenido()">
@@ -32,13 +45,37 @@
         <!-- Contenedor de mensajes del chat -->
     </div>
     <!-- Campo de entrada para escribir mensajes -->
-    <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
+    <div class="contenedor">
+        <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
+        <button onclick="sendMessage()">Enviar</button>
+    </div>
     <br>
     <div class="input-field" id="keyboard-container">
 
 
     <script>
+        var stompClient = null;
+
+        function connect() {
+            var socket = new SockJS('/ws-chat'); // Conecta al endpoint WebSocket
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Conectado: ' + frame);
+            });
+        }
+        function sendMessage() {
+            var messageInput = document.getElementById('message-input');
+            var message = messageInput.value;
+            stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
+            messageInput.value = '';
+        }
+
+
+
+
         function cargarContenido() {
+            connect();
+
             // Realizar una solicitud HTTP GET a la URL deseada
             fetch('http://localhost:8080/keyboard')
             .then(response => response.text())
@@ -50,10 +87,42 @@
         function LscKeyPressed(button) {
             var dataKey = button.getAttribute('data-key');
             var messageInput = document.getElementById('message-input');
-            
-            // Poner el valor de dataKey en el input-field
-            messageInput.value += dataKey;
+        
+            // Verificar si dataKey es "del" y eliminar el último carácter
+            if (dataKey === "del") {
+                var inputValue = messageInput.value;
+                if (inputValue.length > 0) {
+                    // Eliminar el último carácter
+                    messageInput.value = inputValue.slice(0, -1);
+                }
+            } else {
+                // Agregar el valor de dataKey al input-field
+                messageInput.value += dataKey;
+            }
+        } 
+        
+        function publicarTexto() {
+            // Obtén el texto del campo de entrada
+            const texto = document.getElementById("message-input").value;
+
+            // Obtén el div de salida
+            const resultadoDiv = document.getElementById("chat-container");
+
+            // Publica el texto en el div de salida
+            resultadoDiv.textContent = texto;
         }
+
+        
+
+
+        stompClient.subscribe('/topic/public', function (response) {
+            var message = JSON.parse(response.body);
+            // Manejar el mensaje recibido y mostrarlo en el chat-container
+            var chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML += '<p>' + message.message + '</p>';
+        });
+
+
     </script>
 </body>
 </html>
