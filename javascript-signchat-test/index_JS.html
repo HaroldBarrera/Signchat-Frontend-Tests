@@ -57,10 +57,19 @@
         var stompClient = null;
 
         function connect() {
-            var socket = new SockJS('/ws-chat'); // Conecta al endpoint WebSocket
+            console.log(typeof SockJS);
+            var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function (frame) {
                 console.log('Conectado: ' + frame);
+            });
+
+            // Suscribirse al canal después de la conexión exitosa
+            stompClient.subscribe('/topic/message', function (response) {
+                var message = JSON.parse(response.body);
+                // Manejar el mensaje recibido y mostrarlo en el chat-container
+                var chatContainer = document.getElementById('chat-container');
+                chatContainer.innerHTML += '<p>' + message.message + '</p>';
             });
         }
         function sendMessage() {
@@ -74,13 +83,14 @@
 
 
         function cargarContenido() {
-            connect();
+            //connect();
 
             // Realizar una solicitud HTTP GET a la URL deseada
             fetch('http://localhost:8080/keyboard')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('keyboard-container').innerHTML = data;
+                connect();
             })
             .catch(error => console.error('Error:', error));
         }
@@ -124,5 +134,9 @@
 
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js" integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js" integrity="sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>
