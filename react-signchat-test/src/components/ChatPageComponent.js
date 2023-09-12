@@ -13,7 +13,7 @@ const ChatPageComponent = () => {
 
   const [inputValue, setInputValue] = useState("");
   const [inputImgValue, setInputImgValue] = useState([]);
-  const [message, setMessage] = useState('Your server message here');
+  const [messages, setMessages] = useState([]);
   //const spaceView = "space_view.png";
 
   //Websocket
@@ -23,12 +23,26 @@ const ChatPageComponent = () => {
 
   let onMessageReceived = (msg) => {
     console.log(msg);
-    setMessage(msg.messageText);
+    setMessages(...messages, msg.messageText);
   }
 
   let onDisconnected = () => {
     console.log('Disconnected!');
   }
+
+  // Función para enviar un mensaje
+  const sendMessage = async () => {
+    if (inputValue.trim() !== '') {
+      // Enviar el mensaje al servidor WebSocket
+      // Aquí deberías usar SockJsClient para enviar el mensaje al servidor WebSocket
+      // Por ejemplo:
+      // clientRef.sendMessage('/app/sendMessage', JSON.stringify({ messageText: inputValue }));
+      
+      // Agregar el mensaje al estado de la conversación
+      setMessages([...messages, inputValue]);
+      setInputValue(''); // Limpiar el campo de entrada
+    }
+  };
 
   const handleButtonClick = async (key) => {
     let imageUrl = key.target.src;
@@ -103,7 +117,11 @@ const ChatPageComponent = () => {
         onMessage={msg => onMessageReceived(msg)}
         debug={true}
       />
-      <div>{message}</div>
+      <div className="message-container">
+        {messages.map((message, index) => (
+          <div key={index} className="message">{message}</div>
+        ))}
+      </div>
 
       <br />
       <br />
@@ -117,6 +135,7 @@ const ChatPageComponent = () => {
       <br />
       <button onClick={sendImagesToBackend}>Traducir imagenes</button>
       <button onClick={sendTextToBackend}>Traducir texto</button>
+      <button onClick={sendMessage}>Enviar</button>
       <br />
 
       <input type='text' value={inputValue} onChange={(e) => {setInputValue(e.target.value)}}/>
