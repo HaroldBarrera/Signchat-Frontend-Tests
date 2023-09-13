@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creacion de usuario</title>
+                    <style>
+                        /* Estilo para ocultar el div cuando el checkbox no está seleccionado */
+                        .input-field:not(.visible) {
+                            display: none;
+                        }
+                    </style>
+</head>
+<body>
+    <h1>Creacion de usuario</h1>
+    <form>
+        <label for="nombre_usuario">Nombre de Usuario:</label>
+        <input type="text" id="nombre_usuario" name="nombre_usuario">
+        <br><br>
+        
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena">
+        <br><br>
+
+        <!-- Checkbox para recordar usuario -->
+        <label for="discapacidad">Discapacidad visual</label>
+        <input type="checkbox" id="discapacidad" name="discapacidad" onchange="cargarContenido()" >
+        
+
+        <div class="input-field" id="keyboard-container" ><!-- Contenedor para el teclado--></div>
+        
+        <br><br>
+        
+        
+        <!-- Botón de inicio de sesión que ejecuta JavaScript -->
+        <input type="button" value="CrearUsuario" onclick="Login()">
+    </form>
+
+    <script>
+        // Función JavaScript para manejar el inicio de sesión
+        function Login() {
+            var nombreUsuario = document.getElementById("nombre_usuario").value;
+            var contrasena = document.getElementById("contrasena").value;
+            var discapacidad = document.getElementById("discapacidad").checked;
+
+            // Aquí puedes realizar las acciones necesarias, como validar la autenticación
+            // Por ahora, solo mostraremos una alerta con los datos ingresados.
+            alert("Nombre de usuario: " + nombreUsuario + "\nContraseña: " + contrasena + "\nEsSordo:: " + discapacidad);
+        }
+
+        function CreateUser(){
+
+
+        }
+
+        var stompClient = null;
+        function connect() {
+            console.log(typeof SockJS);
+            var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                console.log('Conectado: ' + frame);
+            });
+
+            // Suscribirse al canal después de la conexión exitosa
+            stompClient.subscribe('/topic/message', function (response) {
+                var message = JSON.parse(response.body);
+                // Manejar el mensaje recibido y mostrarlo en el chat-container
+                var chatContainer = document.getElementById('chat-container');
+                chatContainer.innerHTML += '<p>' + message.message + '</p>';
+            });
+        }
+        function cargarContenido() {
+            // se trae el teclado, pero se agrega un condicional para desaparecer o aparecer
+            var checkbox = document.getElementById('discapacidad');
+            var keyboardContainer = document.getElementById('keyboard-container');
+
+            if (checkbox.checked) {
+                // Realizar una solicitud HTTP GET a la URL deseada
+                fetch('http://localhost:8080/keyboard')
+                .then(response => response.text())
+                .then(data => {
+                    keyboardContainer.innerHTML = data;
+                    connect();
+                })
+                .catch(error => console.error('Error:', error));
+
+                // Mostrar el div al cargar contenido
+                keyboardContainer.classList.add('visible');
+            } else {
+                // Ocultar el div si el checkbox no está seleccionado
+                keyboardContainer.classList.remove('visible');
+            }
+        }
+        function LscKeyPressed(button, inputId) {
+            var dataKey = button.getAttribute('data-key');
+            var messageInput = document.getElementById(inputId);
+
+            // Verificar si dataKey es "del" y eliminar el último carácter
+            if (dataKey === "del") {
+                var inputValue = messageInput.value;
+                if (inputValue.length > 0) {
+                    // Eliminar el último carácter
+                    messageInput.value = inputValue.slice(0, -1);
+                }
+            } else {
+                // Agregar el valor de dataKey al input-field
+                messageInput.value += dataKey;
+            }
+        } 
+
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js" integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js" integrity="sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+</body>
+</html>
