@@ -50,7 +50,7 @@
         <button onclick="sendMessage()">Enviar</button>
     </div>
     <br>
-    <div class="input-field" id="keyboard-container">
+    <div class="input-field" id="keyboard-container"></div>
 
 
     <script>
@@ -73,6 +73,7 @@
                 });
             }
         function sendMessage() {
+            publicarTexto();
                 var messageInput = document.getElementById('message-input');
                 var message = messageInput.value;
                 stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
