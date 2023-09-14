@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Inicio de Sesión</title>
 </head>
-<body>
+<body onload="cargarContenido()">
     <h1>Inicio de Sesión</h1>
     <form>
         <label for="nombre_usuario">Usuario:</label>
@@ -26,6 +26,8 @@
         <input type="button" value="Iniciar Sesión" onclick="Login()">
         <input type="button" onclick="location.href='CrearUsua_JS.html';" value="Crear Usuario" />
 
+        <div class="input-field" id="keyboard-container" ><!-- Contenedor para el teclado--></div>
+
 
         
     </form>
@@ -43,6 +45,37 @@
         }
 
     
+
+        function cargarContenido() {
+
+            // Realizar una solicitud HTTP GET a la URL deseada
+            fetch('http://localhost:8080/keyboard')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('keyboard-container').innerHTML = data;
+                connect();
+            })
+            .catch(error => console.error('Error:', error));
+            }
+        function LscKeyPressed(button) {
+            var dataKey = button.getAttribute('data-key');
+            var messageInput = document.getElementById('message-input');
+        
+            // Verificar si dataKey es "del" y eliminar el último carácter
+            if (dataKey === "del") {
+                var inputValue = messageInput.value;
+                if (inputValue.length > 0) {
+                    // Eliminar el último carácter
+                    messageInput.value = inputValue.slice(0, -1);
+                }
+            } else {
+                // Agregar el valor de dataKey al input-field
+                messageInput.value += dataKey;
+            }
+            } 
+
+
+
 
     </script>
 </body>

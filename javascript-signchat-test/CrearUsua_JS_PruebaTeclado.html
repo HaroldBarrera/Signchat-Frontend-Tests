@@ -1,3 +1,7 @@
+<!--   PONER DE FORMA FIJA EL TECLADO DEL INDEX_JS 
+        MANTENER LAS ACTUALES FUNCIONES PUES AHORA ESTA EL CAMBIO DE INPUT
+        QUE EL CHECKBOX HAGA EL TECLADO VISIBLE, CONVINAR EL CHECBKOX CON LA SOLICITUD DE INPUT PARA INGRESAR DATA
+-->
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -11,15 +15,14 @@
                         }
                     </style>
 </head>
-<body>
+<body >
     <h1>Creacion de usuario</h1>
     <form>
         <label for="nombre_usuario">Nombre de Usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre_usuario">
+        <input type="text" id="nombre_usuario" name="nombre_usuario" onClick="cargarContenido(this)">
         <br><br>
-        
         <label for="contrasena">Contraseña:</label>
-        <input type="password" id="contrasena" name="contrasena">
+        <input type="password" id="contrasena" name="contrasena" onClick="cargarContenido(this)">
         <br><br>
 
         <!-- Checkbox para recordar usuario -->
@@ -31,14 +34,16 @@
         
         <br><br>
         
+
+
         
         <!-- Botón de inicio de sesión que ejecuta JavaScript -->
-        <input type="button" value="CrearUsuario" onclick="Login()">
+        <input type="button" value="CrearUsuario" onclick="Crear()">
     </form>
 
     <script>
         // Función JavaScript para manejar el inicio de sesión
-        function Login() {
+        function Crear() {
             var nombreUsuario = document.getElementById("nombre_usuario").value;
             var contrasena = document.getElementById("contrasena").value;
             var discapacidad = document.getElementById("discapacidad").checked;
@@ -46,13 +51,8 @@
             // Aquí puedes realizar las acciones necesarias, como validar la autenticación
             // Por ahora, solo mostraremos una alerta con los datos ingresados.
             alert("Nombre de usuario: " + nombreUsuario + "\nContraseña: " + contrasena + "\nEsSordo:: " + discapacidad);
-        }
-
-        function CreateUser(){
-
-
-        }
-
+            }
+        function CreateUser(){        }
         var stompClient = null;
         function connect() {
             console.log(typeof SockJS);
@@ -69,35 +69,68 @@
                 var chatContainer = document.getElementById('chat-container');
                 chatContainer.innerHTML += '<p>' + message.message + '</p>';
             });
-        }
-        function cargarContenido() {
-            // se trae el teclado, pero se agrega un condicional para desaparecer o aparecer
-            var checkbox = document.getElementById('discapacidad');
-            var keyboardContainer = document.getElementById('keyboard-container');
+            }
 
-            if (checkbox.checked) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            var inputIDs = []; // Array para almacenar las ID de los inputs
+
+        function cargarContenido(inputElement) {
+            // Obtén el valor del id del input
+            var idInput = inputElement.id;
+            inputIDs.splice(0, inputIDs.length);
+
+            var keyboardContainer = document.getElementById('keyboard-container');
+            var discapacidadCheckbox = document.getElementById("discapacidad");
+
+            // Verifica si el input no está vacío
+            if (idInput !== '' && discapacidadCheckbox.checked) {
+                // Almacena la ID del input en el array
+                inputIDs.push(idInput);
+                alert("Valor del input: " + inputIDs);
+
                 // Realizar una solicitud HTTP GET a la URL deseada
                 fetch('http://localhost:8080/keyboard')
-                .then(response => response.text())
-                .then(data => {
-                    keyboardContainer.innerHTML = data;
-                    connect();
-                })
-                .catch(error => console.error('Error:', error));
-
+                    .then(response => response.text())
+                    .then(data => {
+                        keyboardContainer.innerHTML = data;
+                        connect();
+                    })
+                    .catch(error => console.error('Error:', error));
+                
                 // Mostrar el div al cargar contenido
                 keyboardContainer.classList.add('visible');
             } else {
-                // Ocultar el div si el checkbox no está seleccionado
-                keyboardContainer.classList.remove('visible');
+                // Ocultar el div si el input está vacío
             }
         }
+
+
+
+
+
+
+
         function LscKeyPressed(button) {
             var dataKey = button.getAttribute('data-key');
             var messageInput;
         
             // Obtener el input activo en función del elemento seleccionado
-            var nombreUsuarioInput = document.getElementById('nombre_usuario');
+            // var nombreUsuarioInput = document.getElementById('inputIDs');
+            var nombreUsuarioInput = inputIDs;
+
             var contrasenaInput = document.getElementById('contrasena');
         
             if (nombreUsuarioInput === document.activeElement) {

@@ -57,27 +57,27 @@
         var stompClient = null;
 
         function connect() {
-            console.log(typeof SockJS);
-            var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
-            stompClient = Stomp.over(socket);
-            stompClient.connect({}, function (frame) {
-                console.log('Conectado: ' + frame);
-            });
+                console.log(typeof SockJS);
+                var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Conectado: ' + frame);
+                });
 
-            // Suscribirse al canal después de la conexión exitosa
-            stompClient.subscribe('/topic/message', function (response) {
-                var message = JSON.parse(response.body);
-                // Manejar el mensaje recibido y mostrarlo en el chat-container
-                var chatContainer = document.getElementById('chat-container');
-                chatContainer.innerHTML += '<p>' + message.message + '</p>';
-            });
-        }
+                // Suscribirse al canal después de la conexión exitosa
+                stompClient.subscribe('/topic/message', function (response) {
+                    var message = JSON.parse(response.body);
+                    // Manejar el mensaje recibido y mostrarlo en el chat-container
+                    var chatContainer = document.getElementById('chat-container');
+                    chatContainer.innerHTML += '<p>' + message.message + '</p>';
+                });
+            }
         function sendMessage() {
-            var messageInput = document.getElementById('message-input');
-            var message = messageInput.value;
-            stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
-            messageInput.value = '';
-        }
+                var messageInput = document.getElementById('message-input');
+                var message = messageInput.value;
+                stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
+                messageInput.value = '';
+            }
 
 
 
@@ -92,7 +92,7 @@
                 connect();
             })
             .catch(error => console.error('Error:', error));
-        }
+            }
         function LscKeyPressed(button) {
             var dataKey = button.getAttribute('data-key');
             var messageInput = document.getElementById('message-input');
@@ -108,12 +108,11 @@
                 // Agregar el valor de dataKey al input-field
                 messageInput.value += dataKey;
             }
-        } 
+            } 
         
         function publicarTexto() {
             // Obtén el texto del campo de entrada
             const texto = document.getElementById("message-input").value;
-
             // Obtén el div de salida
             const resultadoDiv = document.getElementById("chat-container");
 
