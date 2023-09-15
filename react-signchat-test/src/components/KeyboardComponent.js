@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
+import API_URLS from "./ApiConfig";
 
 const KeyboardComponent = ({ handleKeyClick }) => {
 
     const [keyboardHtml, setKeyboardHtml] = useState('');
-    const URL = process.env.REACT_APP_BACKEND_GURL;
 
     useEffect(() => {
-        fetch(URL + 'keyboard/react')
+        fetch(API_URLS.backend_url + 'keyboard/react')
             .then(response => {
                 if (response.ok) {
                     return response.text();

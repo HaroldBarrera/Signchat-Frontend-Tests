@@ -1,13 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import ImageComponent from './ImageComponent';
 import KeyboardComponent from './KeyboardComponent';
 import SockJsClient from 'react-stomp';
-
-//Websocket
-const SOCKET_URL = process.env.REACT_APP_SOCKET_GURL; //Cambiar url dependiendo del backend
-
-//Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+import API_URLS from './ApiConfig';
 
 const ChatPageComponent = () => {
 
@@ -59,9 +54,9 @@ const ChatPageComponent = () => {
   };
 
   const sendImagesToBackend = async () => {
-    console.log(URL + 'api/messages/translate/img-txt');
+    console.log(API_URLS.backend_url + 'api/messages/translate/img-txt');
     try {
-      const response = await fetch(URL + 'api/messages/translate/img-txt', {
+      const response = await fetch(API_URLS.backend_url + 'api/messages/translate/img-txt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -84,7 +79,7 @@ const ChatPageComponent = () => {
 
   const sendTextToBackend = async () => {
     try {
-      const response = await fetch(URL + 'api/messages/translate/txt-img', {
+      const response = await fetch(API_URLS.backend_url + 'api/messages/translate/txt-img', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +105,7 @@ const ChatPageComponent = () => {
       <h1>Prueba de Signchat Microservicio</h1>
 
       <SockJsClient 
-        url={SOCKET_URL}
+        url={API_URLS.websocket_url}
         topics={['/topic/message']}
         onConnect={onConnected}
         onDisconnect={onDisconnected}

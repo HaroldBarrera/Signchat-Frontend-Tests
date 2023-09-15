@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom';
-
-//Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+import API_URLS from "./ApiConfig";
 
 const RegisterPageComponent = () => {
 
@@ -21,7 +19,7 @@ const RegisterPageComponent = () => {
         formData.append('userIsDeaf', userIsDeaf);
 
         try {
-            const response = await fetch(URL + 'api/users/create', {
+            const response = await fetch(API_URLS.backend_url + 'api/users/create', {
               method: 'POST',
               body: formData,
             });

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { Link } from 'react-router-dom';
-
-//Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+import API_URLS from "./ApiConfig";
 
 const LoginPageComponent = () => {
 
@@ -17,7 +15,7 @@ const LoginPageComponent = () => {
         formData.append('password', password);
 
         try {
-            const response = await fetch(URL + 'api/users/login', {
+            const response = await fetch(API_URLS.backend_url + 'api/users/login', {
               method: 'POST',
               body: formData,
             });

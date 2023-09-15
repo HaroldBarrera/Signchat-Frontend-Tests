@@ -1,13 +1,12 @@
 import { useState } from "react";
+import API_URLS from "./ApiConfig";
 
 const ImageComponent = () => {
     const [imagen, setImagen] = useState(null);
-    const URL = 'https://haroldbarrera-automatic-parakeet-gpjj55r57vqc59v-8080.app.github.dev/';
-    //const URL = 'https://localhost:8080/';
 
     const getImage = async () => {
         const imageName = "sc_e.png";
-        const response = await fetch(URL + `images/${imageName}`);
+        const response = await fetch(API_URLS.backend_url + `images/${imageName}`);
 
         if(response.ok){
             const blob = await response.blob();
