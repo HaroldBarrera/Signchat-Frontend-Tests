@@ -1,35 +1,39 @@
 import { useState } from "react";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 //Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 const LoginPageComponent = () => {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const logUser = async () => {
-        console.log(username , " " , password);
-        console.log(URL + 'api/users/login');
         const formData = new FormData();
-        formData.append('nickname', username);
+        formData.append('username', username);
         formData.append('password', password);
 
         try {
             const response = await fetch(URL + 'api/users/login', {
-              method: 'POST',
-              body: formData,
+                method: 'POST',
+                body: formData,
+                credentials: 'include', // Enviar cookies con la solicitud
+                headers: {
+                    'Accept': 'application/json',
+                },
             });
-        
+
             if (response.ok) {
-              console.log("Login succesfully gonorreaaaaaaaaaaaa");
+                // Redirigir después del inicio de sesión exitoso
+                navigate('/');
             } else {
-              console.error("Error al logear usuario");
+                console.error("Error al iniciar sesión");
             }
-          } catch (error) {
-            console.error('Error al logear usuario:', error);
-          }
+        } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+        }
     }
 
     return(

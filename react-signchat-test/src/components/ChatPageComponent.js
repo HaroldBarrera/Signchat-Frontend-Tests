@@ -4,10 +4,13 @@ import KeyboardComponent from './KeyboardComponent';
 import SockJsClient from 'react-stomp';
 
 //Websocket
-const SOCKET_URL = process.env.REACT_APP_SOCKET_GURL; //Cambiar url dependiendo del backend
+const SOCKET_URL = process.env.REACT_APP_SOCKET_URL; //Cambiar url dependiendo del backend
 
 //Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+const URL = process.env.REACT_APP_BACKEND_URL;
+
+//Agregar nombre de usuario unico
+const userId = Math.random().toString(36).substring(7);
 
 const ChatPageComponent = () => {
 
@@ -23,7 +26,7 @@ const ChatPageComponent = () => {
 
   let onMessageReceived = (msg) => {
     console.log(msg);
-    setMessages(...messages, msg.messageText);
+    setMessages(...messages, msg);
   }
 
   let onDisconnected = () => {
@@ -111,7 +114,7 @@ const ChatPageComponent = () => {
 
       <SockJsClient 
         url={SOCKET_URL}
-        topics={['/topic/message']}
+        topics={[`/topic/message/${userId}`]}
         onConnect={onConnected}
         onDisconnect={onDisconnected}
         onMessage={msg => onMessageReceived(msg)}

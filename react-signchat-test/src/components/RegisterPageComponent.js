@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from 'react-router-dom';
 
 //Backend
-const URL = process.env.REACT_APP_BACKEND_GURL;
+const URL = process.env.REACT_APP_BACKEND_URL;
 
 const RegisterPageComponent = () => {
 
@@ -24,6 +24,7 @@ const RegisterPageComponent = () => {
             const response = await fetch(URL + 'api/users/create', {
               method: 'POST',
               body: formData,
+              credentials: "include"
             });
         
             if (response.ok) {

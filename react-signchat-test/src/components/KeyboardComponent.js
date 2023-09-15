@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const KeyboardComponent = ({ handleKeyClick }) => {
 
     const [keyboardHtml, setKeyboardHtml] = useState('');
-    const URL = process.env.REACT_APP_BACKEND_GURL;
+    const URL = process.env.REACT_APP_BACKEND_URL;
 
     useEffect(() => {
         fetch(URL + 'keyboard/react')
