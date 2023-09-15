@@ -22,6 +22,7 @@ const RegisterPageComponent = () => {
             const response = await fetch(API_URLS.backend_url + 'api/users/create', {
               method: 'POST',
               body: formData,
+              credentials: "include"
             });
         
             if (response.ok) {

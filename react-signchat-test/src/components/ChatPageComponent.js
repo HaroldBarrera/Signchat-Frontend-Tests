@@ -18,7 +18,7 @@ const ChatPageComponent = () => {
 
   let onMessageReceived = (msg) => {
     console.log(msg);
-    setMessages(...messages, msg.messageText);
+    setMessages(...messages, msg);
   }
 
   let onDisconnected = () => {
@@ -106,7 +106,7 @@ const ChatPageComponent = () => {
 
       <SockJsClient 
         url={API_URLS.websocket_url}
-        topics={['/topic/message']}
+        topics={[`/topic/message/${userId}`]}
         onConnect={onConnected}
         onDisconnect={onDisconnected}
         onMessage={msg => onMessageReceived(msg)}
