@@ -3,37 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Inicio de Sesión</title>
+    <title>Inicio Sesion</title>
+    <style>
+        /* Estilos CSS para el chat */
+        /* Estilo básico del contenedor del chat */
+        .Div-Chat {
+            width: 300px;
+            margin: 0 auto;
+            height: 600px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: scroll; /* Agregamos una barra de desplazamiento vertical */
+            max-height: 400px; /* Altura máxima del contenedor del chat */
+        }
+        /* Estilo del campo de entrada */
+        .input-field {
+            visibility: hidden;
+
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-top: none; /* Quitamos el borde superior para que se integre con el contenedor de chat */
+            border-radius: 0 0 5px 5px; /* Estilo de borde en la parte inferior */
+        }
+        .contenedor {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+    </style>
+    <title>Formulario de Creación de Usuario</title>
+
 </head>
 <body onload="cargarContenido()">
-    <h1>Inicio de Sesión</h1>
-    <form>
-        <label for="nombre_usuario">Usuario:</label>
-        <input type="text" id="nombre_usuario" name="nombre_usuario" >
-        <br><br>
-        
-        <label for="contrasena">Contraseña:</label>
-        <input type="password" id="contrasena" name="contrasena" >
-        <br><br>
-
-        <!-- Checkbox para recordar usuario -->
-        <label for="discapacidad">Discapacidad </label>
-        <input type="checkbox" id="discapacidad" name="discapacidad">
-        <br><br>
-        
-        
-        <!-- Botón de inicio de sesión que ejecuta JavaScript -->
-        <input type="button" value="Iniciar Sesión" onclick="Login()">
-        <input type="button" onclick="location.href='CrearUsua_JS.html';" value="Crear Usuario" />
-
-        <div class="input-field" id="keyboard-container" ><!-- Contenedor para el teclado--></div>
+    <h1>Inicio Sesion</h1>
+        <br>
+        <form>
+            <div class="contenedor">
+                <label for="nombre_usuario">Nombre de Usuario:</label>
+                <input type="text" id="nombre_usuario" placeholder="Escribe tu mensaje aquí" onclick="SelecionInput(this)">
+            </div>
+                <label for="contrasena">Contraseña:</label>
+                <input type="password"  id="contrasena" placeholder="contraseña"   onclick="SelecionInput(this)">
+        <br>
+                <label for="discapacidad">Discapacidad visual</label>
+                <input type="checkbox" id="discapacidad" name="discapacidad" onchange="SelecionInput(this)" >
 
 
-        
-    </form>
+            <br>
+                <!-- Botón de inicio de sesión que ejecuta JavaScript -->
+                <input type="button" value="Iniciar Sesion" onclick="Login()">
+                <input type="button" onclick="location.href='CrearUsua_JS.html';" value="Crear Usuario" />
+        </form>        
+            <br>
+            <div class="input-field" id="keyboard-container"></div>
+
 
     <script>
-        // Función JavaScript para manejar el inicio de sesión
+        var stompClient = null;
+
+        function connect() {
+                console.log(typeof SockJS);
+                var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
+                stompClient = Stomp.over(socket);
+                stompClient.connect({}, function (frame) {
+                    console.log('Conectado: ' + frame);
+                });
+
+                // Suscribirse al canal después de la conexión exitosa
+                stompClient.subscribe('/topic/message', function (response) {
+                    var message = JSON.parse(response.body);
+                    // Manejar el mensaje recibido y mostrarlo en el chat-container
+                    var chatContainer = document.getElementById('chat-container');
+                    chatContainer.innerHTML += '<p>' + message.message + '</p>';
+                });
+            }
+        
+             // Función JavaScript para manejar el inicio de sesión
         function Login() {
             var nombreUsuario = document.getElementById("nombre_usuario").value;
             var contrasena = document.getElementById("contrasena").value;
@@ -44,10 +90,10 @@
             alert("Nombre de usuario: " + nombreUsuario + "\nContraseña: " + contrasena+"\nEsSordo:: "+discapacidad);
         }
 
-    
+
+
 
         function cargarContenido() {
-
             // Realizar una solicitud HTTP GET a la URL deseada
             fetch('http://localhost:8080/keyboard')
             .then(response => response.text())
@@ -57,10 +103,41 @@
             })
             .catch(error => console.error('Error:', error));
             }
+
+
+
+
+
+
+        var inputIDs = []; // Array para almacenar las ID de los inputs
+        function SelecionInput(inputElement){
+                // Obtén el valor del id del input
+                var idInput = inputElement.id;
+                inputIDs.splice(0, inputIDs.length);
+                inputIDs.push(idInput);
+                console.log("input:: "+ inputIDs);
+
+                // Obtén el estado del checkbox
+                var checkbox = document.getElementById("discapacidad"); // Reemplaza "tuCheckboxID" con el ID real de tu checkbox
+                        var divKeyB = document.getElementById("keyboard-container");
+                if (checkbox.checked) {
+                    // Si el checkbox está seleccionado, muestra el div
+                    console.log('check');
+                    divKeyB.style.visibility ="visible";
+                } else {
+                    // Si el checkbox no está seleccionado, oculta el div
+                    console.log('not check');
+                    divKeyB.style.visibility ="hidden";
+                }
+
+            }
+
+
         function LscKeyPressed(button) {
             var dataKey = button.getAttribute('data-key');
-            var messageInput = document.getElementById('message-input');
-        
+            var messageInput = document.getElementById(inputIDs);
+            console.log("input:: "+ inputIDs);
+
             // Verificar si dataKey es "del" y eliminar el último carácter
             if (dataKey === "del") {
                 var inputValue = messageInput.value;
@@ -74,9 +151,18 @@
             }
             } 
 
-
+        stompClient.subscribe('/topic/public', function (response) {
+            var message = JSON.parse(response.body);
+            // Manejar el mensaje recibido y mostrarlo en el chat-container
+            var chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML += '<p>' + message.message + '</p>';
+        });
 
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js" integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" integrity="sha512-iKDtgDyTHjAitUDdLljGhenhPwrbBfqTKWO1mkhSFH3A7blITC9MhYon6SjnMhp4o0rADGw9yAC6EW4t5a4K3g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js" integrity="sha512-tL4PIUsPy+Rks1go4kQG8M8/ItpRMvKnbBjQm4d2DQnFwgcBYRRN00QdyQnWSCwNMsoY/MfJY8nHp2CzlNdtZA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
 </html>

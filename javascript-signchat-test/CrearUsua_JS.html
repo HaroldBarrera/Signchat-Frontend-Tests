@@ -104,28 +104,26 @@
 
 
 
-            var inputIDs = []; // Array para almacenar las ID de los inputs
-            function SelecionInput(inputElement){
+        var inputIDs = []; // Array para almacenar las ID de los inputs
+        function SelecionInput(inputElement){
                 // Obtén el valor del id del input
                 var idInput = inputElement.id;
                 inputIDs.splice(0, inputIDs.length);
                 inputIDs.push(idInput);
                 console.log("input:: "+ inputIDs);
 
-        // Obtén el estado del checkbox
-        var checkbox = document.getElementById("discapacidad"); // Reemplaza "tuCheckboxID" con el ID real de tu checkbox
-                var divKeyB = document.getElementById("keyboard-container");
-        if (checkbox.checked) {
-            // Si el checkbox está seleccionado, muestra el div
-            console.log('check');
-            divKeyB.style.visibility ="visible";
-        } else {
-            // Si el checkbox no está seleccionado, oculta el div
-            console.log('not check');
-            divKeyB.style.visibility ="hidden";
-
-
-        }
+                // Obtén el estado del checkbox
+                var checkbox = document.getElementById("discapacidad"); // Reemplaza "tuCheckboxID" con el ID real de tu checkbox
+                        var divKeyB = document.getElementById("keyboard-container");
+                if (checkbox.checked) {
+                    // Si el checkbox está seleccionado, muestra el div
+                    console.log('check');
+                    divKeyB.style.visibility ="visible";
+                } else {
+                    // Si el checkbox no está seleccionado, oculta el div
+                    console.log('not check');
+                    divKeyB.style.visibility ="hidden";
+                }
 
             }
 
