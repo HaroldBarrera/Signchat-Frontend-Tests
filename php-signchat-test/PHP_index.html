@@ -25,6 +25,12 @@
             border-top: none; /* Quitamos el borde superior para que se integre con el contenedor de chat */
             border-radius: 0 0 5px 5px; /* Estilo de borde en la parte inferior */
         }
+
+        /* Estilo para el iframe */
+        iframe {
+            width: 100%;
+            height: 300px; /* Ajusta la altura según tus necesidades */
+        }
     </style>
 </head>
 <body>
@@ -34,14 +40,15 @@
     <!-- Campo de entrada para escribir mensajes -->
     <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
     <br>
-    <div class="input-field" id="keyboard-container">
-        <?php
-        //  aaaaa Obtener el contenido de "http://localhost:8080/keyboard" utilizando PHP aaaaa
-        $contenido = file_get_contents('http://localhost:8080/keyboard');
-
-        // Imprimir el contenido dentro de la página
-        echo $contenido;
+    <!-- iframe para cargar y mostrar el teclado virtual -->
+    <iframe src="http://localhost:8080/keyboard" frameborder="0"></iframe>
+    <button onclick="test()"> Click </button>
+    <?php
+        function php_func(){
+            echo " Have a great day";
+        }
+        php_func();
         ?>
-    </div>
+
 </body>
 </html>

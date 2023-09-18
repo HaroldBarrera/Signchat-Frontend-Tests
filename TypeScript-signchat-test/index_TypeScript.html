@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>Chat JS</title>
     <style>
         /* Estilos CSS para el chat */
         /* Estilo básico del contenedor del chat */
@@ -16,7 +16,6 @@
             overflow-y: scroll; /* Agregamos una barra de desplazamiento vertical */
             max-height: 400px; /* Altura máxima del contenedor del chat */
         }
-
         /* Estilo del campo de entrada */
         .input-field {
             width: 100%;
@@ -25,19 +24,34 @@
             border-top: none; /* Quitamos el borde superior para que se integre con el contenedor de chat */
             border-radius: 0 0 5px 5px; /* Estilo de borde en la parte inferior */
         }
+        .contenedor {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+         /* Estilos para el botón */
+        .boton {
+            flex: 3; /* Ocupa el 30% del ancho disponible */
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 </head>
-<script src="index_TypeScript_pr2.ts"></script>
-
 <body onload="cargarContenido()">
     <div class="Div-Chat" id="chat-container">
         <!-- Contenedor de mensajes del chat -->
     </div>
     <!-- Campo de entrada para escribir mensajes -->
-    <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
-    <br>
-    <div class="input-field" id="keyboard-container">
+    <div class="contenedor">
+        <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
+        <button onclick="sendMessage()">Enviar</button>
     </div>
+    <br>
+    <div class="input-field" id="keyboard-container"></div>
 
+    <script src="dist/main.js"></script>
 </body>
 </html>
