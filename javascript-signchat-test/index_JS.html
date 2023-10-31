@@ -48,6 +48,8 @@
     <div class="contenedor">
         <input type="text" class="input-field" id="message-input" placeholder="Escribe tu mensaje aquí">
         <button onclick="sendMessage()">Enviar</button>
+        <button onclick="TxtImg()">TxtImg</button>
+        <button onclick="ImgTxt()">ImgTxt</button>
     </div>
     <br>
     <div class="input-field" id="keyboard-container"></div>
@@ -58,7 +60,7 @@
 
         function connect() {
                 console.log(typeof SockJS);
-                var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
+                var socket = new SockJS('http://localhost:8081/ws-chat'); // Conecta al endpoint WebSocket
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function (frame) {
                     console.log('Conectado: ' + frame);
@@ -72,27 +74,44 @@
                     chatContainer.innerHTML += '<p>' + message.message + '</p>';
                 });
             }
+
         function sendMessage() {
-            publicarTexto();
-                var messageInput = document.getElementById('message-input');
-                var message = messageInput.value;
-                stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
-                messageInput.value = '';
-            }
+            var messageInput = document.getElementById('message-input');
+            var message = messageInput.value;
+            stompClient.send("/app/sendMessage", {}, JSON.stringify({ message: message }));
+            publicarTexto(message); // Llama a la función para agregar el mensaje al chat
+            messageInput.value = '';
+        }
+            
+            
+        function publicarTexto(texto) {
+                // Obtén el div de salida
+                const resultadoDiv = document.getElementById("chat-container");
+            
+                // Crea un nuevo elemento <p> para el mensaje y agrega el texto
+                var messageElement = document.createElement('p');
+                messageElement.textContent = texto;
+            
+                // Agrega el nuevo elemento al contenedor del chat
+                resultadoDiv.appendChild(messageElement);
+            
+                // Desplázate hacia abajo para mostrar el nuevo mensaje
+                resultadoDiv.scrollTop = resultadoDiv.scrollHeight;
+        }
+            
 
 
 
         function cargarContenido() {
-
             // Realizar una solicitud HTTP GET a la URL deseada
-            fetch('http://localhost:8080/keyboard')
+            fetch('http://localhost:8081/keyboard')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('keyboard-container').innerHTML = data;
                 connect();
             })
             .catch(error => console.error('Error:', error));
-            }
+        }
         function LscKeyPressed(button) {
             var dataKey = button.getAttribute('data-key');
             var messageInput = document.getElementById('message-input');
@@ -108,29 +127,16 @@
                 // Agregar el valor de dataKey al input-field
                 messageInput.value += dataKey;
             }
-            } 
+        } 
         
-        function publicarTexto() {
-            // Obtén el texto del campo de entrada
-            const texto = document.getElementById("message-input").value;
-            // Obtén el div de salida
-            const resultadoDiv = document.getElementById("chat-container");
+        function TxtImg(){
+// /translate/txt-img"
 
-            // Publica el texto en el div de salida
-            resultadoDiv.textContent = texto;
         }
-
-        
-
-
-        stompClient.subscribe('/topic/public', function (response) {
-            var message = JSON.parse(response.body);
-            // Manejar el mensaje recibido y mostrarlo en el chat-container
-            var chatContainer = document.getElementById('chat-container');
-            chatContainer.innerHTML += '<p>' + message.message + '</p>';
-        });
+        function ImgTxt(){
 
 
+        }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" integrity="sha512-1QvjE7BtotQjkq8PxLeF6P46gEpBRXuskzIVgjFpekzFVF4yjRgrQvTG1MTOJ3yQgvTteKAcO7DSZI92+u/yZw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js" integrity="sha512-aHuAnb+FZ/yM5zYvdiA8q0sxLdsBQ3PRwO8D/08qsenCLQ2gWsosB43Cn1X8esAz0IpaC7Ns5cAPyKIdJQ0hNw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

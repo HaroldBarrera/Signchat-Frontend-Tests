@@ -57,7 +57,7 @@
 
         function connect() {
                 console.log(typeof SockJS);
-                var socket = new SockJS('http://localhost:8080/ws-chat'); // Conecta al endpoint WebSocket
+                var socket = new SockJS('http://localhost:8081/ws-chat'); // Conecta al endpoint WebSocket
                 stompClient = Stomp.over(socket);
                 stompClient.connect({}, function (frame) {
                     console.log('Conectado: ' + frame);
@@ -87,7 +87,7 @@
 
         function cargarContenido() {
             // Realizar una solicitud HTTP GET a la URL deseada
-            fetch('http://localhost:8080/keyboard')
+            fetch('http://localhost:8081/keyboard')
             .then(response => response.text())
             .then(data => {
                 document.getElementById('keyboard-container').innerHTML = data;
